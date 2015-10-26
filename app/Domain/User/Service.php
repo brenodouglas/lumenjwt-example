@@ -10,11 +10,11 @@ use Illuminate\Http\Request;
 class Service 
 {
 
-	public function authenticate(Request $request) 
-	{
-		$credentials = $request->json()->all();
+    public function authenticate(Request $request) 
+    {
+        $credentials = $request->json()->all();
 
-	  	if (! $user = Auth::attempt($credentials, $request->has('remember'))) 
+        if (! $user = Auth::attempt($credentials, $request->has('remember'))) 
             return false;
 
         $key = getenv('APP_KEY');
@@ -30,6 +30,6 @@ class Service
                         ->getToken();
 
         return $token->__toString();
-	}
+    }
 
 }
