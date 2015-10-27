@@ -10,14 +10,10 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
+$app->post('/auth', ['middleware' => 'cors', 'uses' => 'AuthController@auth']);
+$app->group(['middleware' => ['cors', 'jwtauth', 'jwtrefresh']], function ($app) {
 
-$app->get('/', function () use ($app) {
-    return $app->welcome();
-});
-
-$app->post('/auth', 'AuthController@auth');
-
-$app->group(['middleware' => ['jwtauth', 'jwtrefresh']], function ($app) {
     $app->get('/users', 'App\Http\Controllers\PessoaController@users');
+    
 });
 

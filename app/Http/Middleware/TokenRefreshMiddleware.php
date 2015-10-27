@@ -23,9 +23,6 @@ class TokenRefreshMiddleware
 
     	$response = $next($request);
 
-    	$token = $request->header('access-token');
-    	$tokenParsed = (new Parser())->parse((string) $token); 
-
     	$key = getenv('APP_KEY');
         $signer = new Sha256();
         $token = (new Builder())->setIssuer($request->server('SERVER_ADDR')) // Configures the issuer (iss claim)
@@ -34,7 +31,7 @@ class TokenRefreshMiddleware
                         ->setIssuedAt(time()) // Configures the time that the token was issue (iat claim)
                         ->setNotBefore(time() + 60) // Configures the time that the token can be used (nbf claim)
                         ->setExpiration(time() + 3600) // Configures the expiration time of the token (exp claim)
-                        ->set('uid', $tokenParsed->getClaim('uid')) // Configures a new claim, called "uid"
+                        ->set('uid', getenv('USER')) // Configures a new claim, called "uid"
                         ->sign($signer, $key) // creates a signature using "testing" as key
                         ->getToken(); // Retrieves the generated token
 

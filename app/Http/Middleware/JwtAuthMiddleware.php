@@ -21,7 +21,7 @@ class JwtAuthMiddleware
         $token = $request->header('access-token');
 
         if(! $token)
-            return response('Unauthorized.', 401);
+            return response('Unauthorized.', 403);
 
         $key = getenv('APP_KEY');
         $signer = new Sha256();
@@ -39,9 +39,11 @@ class JwtAuthMiddleware
             if(! $token->verify($signer, $key))
                 return response('Unauthorized sign', 401);
 
+            putenv("USER=".$token->getClaim('uid'));
+            
             return $next($request);
         } catch(\Exception $e) {
-            return response('Unauthorized: '.$e->getMessage(), 401);
+            return response('Unauthorized: '.$e->getMessage(), 403);
         } 
     }
 }
