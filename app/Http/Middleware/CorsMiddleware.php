@@ -14,9 +14,14 @@ class CorsMiddleware
      */
     public function handle($request, Closure $next)
     {
-         return $next($request)
+        if(strtoupper($request->method()) == "OPTIONS") {
+              return response(null, 204);
+        }
+
+        return $next($request)
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'DNT,X-Access-Token,Access-Token,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type');
+            ->header("Access-Control-Expose-Headers", "Set-Cookie,Token-Refreshed")
+            ->header('Access-Control-Allow-Headers', 'X-Access-Token,Access-Token,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type');
     }
 }

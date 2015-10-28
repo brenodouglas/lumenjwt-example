@@ -10,20 +10,23 @@ use App\Domain\User\Model as User;
 
 class PessoaController extends BaseController
 {	
-
 	
-	public function get(Request $request) 
+	public function getUserLogged() 
 	{
-		$user = User::with(['email'])->get();
+		$id = filter_var(getenv('USER'), FILTER_SANITIZE_NUMBER_INT);
 
-		$wheres = json_decode($request->query("where", '[]'));
-		$fields = explode(',', $request->query('fields', 'id'));
-		$offset = $request->query('offset', 0);
-		$limit  = $request->query('limit', 30);
-		$orderBy = json_decode($request->query('orderBy', '[]'));
-		$groupBy = json_decode($request->query('groupBy', '[]'));
+		return response()->json(['error' => 0, 'data' => User::find($id)]);
 
-		return response()->json(['wheres' => $wheres]);
+//		$user = User::with(['email'])->get();
+
+//		$wheres = json_decode($request->query("where", '[]'));
+//		$fields = explode(',', $request->query('fields', 'id'));
+//		$offset = $request->query('offset', 0);
+//		$limit  = $request->query('limit', 30);
+//		$orderBy = json_decode($request->query('orderBy', '[]'));
+//		$groupBy = json_decode($request->query('groupBy', '[]'));
+
+		
 	}
 
 	public function users(SymfonyRequest $request)

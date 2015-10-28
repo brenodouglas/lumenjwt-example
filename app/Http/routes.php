@@ -14,6 +14,7 @@ $app->post('/auth', ['middleware' => 'cors', 'uses' => 'AuthController@auth']);
 $app->group(['middleware' => ['cors', 'jwtauth', 'jwtrefresh']], function ($app) {
 
     $app->get('/users', 'App\Http\Controllers\PessoaController@users');
+    $app->get('/users/logged', 'App\Http\Controllers\PessoaController@getUserLogged');
     
 });
 
