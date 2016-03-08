@@ -34,7 +34,7 @@ class JwtAuthMiddleware
         
         try {
             $token = (new Parser())->parse((string) $token); 
-
+            
             if(! $token->validate($data))
                 return response('Unauthorized data', 401);
 

@@ -21,8 +21,8 @@ class Service
         
         $key = getenv('APP_KEY');
         $signer = new Sha256();
-        $token = (new Builder())->setIssuer($request->server('SERVER_ADDR'))
-                        ->setAudience($request->server('REMOTE_HOST'))
+        $token = (new Builder())->setIssuer($request->server('REMOTE_ADDR'))
+                        ->setAudience($request->server('HTTP_HOST'))
                         ->setIssuedAt(time())
                         ->setNotBefore(time()) 
                         ->setExpiration(time() + 3600) 
