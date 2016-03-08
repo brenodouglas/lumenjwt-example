@@ -16,16 +16,17 @@ class Service
 
         if (! $user = Auth::attempt($credentials, $request->has('remember'))) 
             return false;
-
+        
+        $user = Auth::user();
+        
         $key = getenv('APP_KEY');
         $signer = new Sha256();
         $token = (new Builder())->setIssuer($request->server('SERVER_ADDR'))
                         ->setAudience($request->server('REMOTE_HOST'))
-                        ->setId('4f1g23a12aa', true) 
                         ->setIssuedAt(time())
                         ->setNotBefore(time()) 
                         ->setExpiration(time() + 3600) 
-                        ->set('uid', $user) 
+                        ->set('uid', $user->id) 
                         ->sign($signer, $key) 
                         ->getToken();
 

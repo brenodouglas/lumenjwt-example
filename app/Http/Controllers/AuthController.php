@@ -24,7 +24,7 @@ class AuthController extends BaseController
 	public function auth(Request $request) 
 	{
 		$credentials = $request->json()->all();
-
+        
 	    if (! $token = $this->service->authenticate($request)) 
 	    	return response("Login or password invalid", 401);
 

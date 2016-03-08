@@ -17,19 +17,21 @@ class JwtAuthMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
+    {   
         $token = $request->header('access-token');
+        
+        $token = isset($token) ? $request->header('access-token') : $request->get('api_token');
         
         if(! $token)
             return response('Unauthorized.', 403);
 
         $key = getenv('APP_KEY');
+        
         $signer = new Sha256();
         $data = new ValidationData(); // It will use the current time to validate (iat, nbf and exp)
-        $data->setIssuer($request->server('SERVER_ADDR'));
-        $data->setAudience($request->server('REMOTE_HOST'));
-        $data->setId('4f1g23a12aa');
-
+        $data->setIssuer($request->server('REMOTE_ADDR'));
+        $data->setAudience($request->server('HTTP_HOST'));
+        
         try {
             $token = (new Parser())->parse((string) $token); 
 

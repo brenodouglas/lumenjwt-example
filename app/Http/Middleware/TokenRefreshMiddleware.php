@@ -7,6 +7,8 @@ use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Parser;
 
+use Symfony\Component\HttpFoundation\Cookie;
+
 class TokenRefreshMiddleware 
 {
 
@@ -22,22 +24,20 @@ class TokenRefreshMiddleware
     {
 
     	$response = $next($request);
-
+        
     	$key = getenv('APP_KEY');
         $signer = new Sha256();
-        $token = (new Builder())->setIssuer($request->server('SERVER_ADDR')) // Configures the issuer (iss claim)
-                        ->setAudience($request->server('REMOTE_HOST')) // Configures the audience (aud claim)
-                        ->setId('4f1g23a12aa', true) // Configures the id (jti claim), replicating as a header item
+        $token = (new Builder())->setIssuer($request->server('REMOTE_ADDR')) // Configures the issuer (iss claim)
+                        ->setAudience($request->server('HTTP_HOST')) // Configures the audience (aud claim)
                         ->setIssuedAt(time()) // Configures the time that the token was issue (iat claim)
                         ->setNotBefore(time()) // Configures the time that the token can be used (nbf claim)
                         ->setExpiration(time() + 3600) // Configures the expiration time of the token (exp claim)
                         ->set('uid', getenv('USER')) // Configures a new claim, called "uid"
                         ->sign($signer, $key) // creates a signature using "testing" as key
                         ->getToken(); // Retrieves the generated token
-
-        //$response->withCookie($token->__toString());
-	    $response->header('Token-Refreshed', $token->__toString());
-
+        
+        $response->withCookie(new Cookie("TOKEN", $token->__toString()));
+        
       	return $response;
     }
 
